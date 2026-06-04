@@ -6,8 +6,7 @@ import { Spinner } from "@/components/Spinner";
 
 export function ConfigPanel({ agentId }: { agentId: string }) {
   const [profile, setProfile] = useState<HermesProfile | null>(null);
-  const [soul, setSoul] = useState("");
-  const [description, setDescription] = useState("");
+  const [goal, setGoal] = useState("");
   const [provider, setProvider] = useState("");
   const [model, setModel] = useState("");
   const [loading, setLoading] = useState(true);
@@ -20,8 +19,7 @@ export function ConfigPanel({ agentId }: { agentId: string }) {
       const data = await res.json();
       if (res.ok) {
         setProfile(data.profile);
-        setSoul(data.soul ?? "");
-        setDescription(data.profile.description ?? "");
+        setGoal(data.goal ?? "");
         setProvider(data.profile.provider ?? "");
         setModel(data.profile.model ?? "");
       }
@@ -36,7 +34,7 @@ export function ConfigPanel({ agentId }: { agentId: string }) {
       const res = await fetch(`/api/agents/${encodeURIComponent(agentId)}`, {
         method: "PATCH",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ soul, description, provider, model }),
+        body: JSON.stringify({ goal, provider, model }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Save failed");
@@ -65,13 +63,14 @@ export function ConfigPanel({ agentId }: { agentId: string }) {
       </div>
 
       <div>
-        <label className="mb-1.5 block text-sm font-medium">Description</label>
-        <input className="input" value={description} onChange={(e) => setDescription(e.target.value)} />
-      </div>
-
-      <div>
-        <label className="mb-1.5 block text-sm font-medium">System prompt (SOUL.md)</label>
-        <textarea className="input min-h-48 resize-y font-mono text-xs" value={soul} onChange={(e) => setSoul(e.target.value)} />
+        <label className="mb-1.5 block text-sm font-medium">Goal</label>
+        <textarea
+          className="input min-h-48 resize-y"
+          placeholder="What should this agent accomplish?"
+          value={goal}
+          onChange={(e) => setGoal(e.target.value)}
+        />
+        <p className="mt-1 text-xs text-[var(--muted)]">Injected into the agent&apos;s SOUL.md.</p>
       </div>
 
       <div className="flex flex-wrap gap-2 text-[11px] text-[var(--muted)]">

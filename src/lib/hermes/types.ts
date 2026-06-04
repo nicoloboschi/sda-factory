@@ -14,6 +14,8 @@ export interface HermesProfile {
   distribution_version: string | null;
   distribution_source: string | null;
   has_alias: boolean;
+  /** Injected into the list response by the app: the agent's Goal (from SOUL.md). */
+  goal?: string;
 }
 
 export interface CreateAgentInput {

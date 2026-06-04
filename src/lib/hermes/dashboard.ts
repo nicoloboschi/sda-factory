@@ -1,6 +1,7 @@
 import "server-only";
 import { ensureManagementBackend } from "./backend";
 import { SESSION_HEADER } from "./config";
+import { extractGoal, injectGoal } from "./goal";
 import type { CreateAgentInput, HermesProfile } from "./types";
 
 /** Authenticated fetch against the management dashboard. */
@@ -77,6 +78,17 @@ export async function putDescription(name: string, description: string): Promise
       body: JSON.stringify({ description }),
     }),
   );
+}
+
+/** Read the agent's Goal (the managed block injected into SOUL.md). */
+export async function getGoal(name: string): Promise<string> {
+  return extractGoal(await getSoul(name));
+}
+
+/** Write the agent's Goal, injecting it into SOUL.md without clobbering the rest. */
+export async function setGoal(name: string, goal: string): Promise<void> {
+  const soul = await getSoul(name);
+  await putSoul(name, injectGoal(soul, goal));
 }
 
 export async function putModel(name: string, provider: string, model: string): Promise<void> {

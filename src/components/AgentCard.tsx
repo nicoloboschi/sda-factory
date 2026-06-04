@@ -46,7 +46,7 @@ export function AgentCard({
             )}
           </div>
           <p className="mt-1 line-clamp-2 text-sm text-[var(--muted)]">
-            {profile.description || "No description"}
+            {profile.goal || "No goal set"}
           </p>
         </div>
         <button

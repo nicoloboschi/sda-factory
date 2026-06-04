@@ -9,8 +9,7 @@ type Phase = "form" | "installing" | "error";
 export function CreateBlankForm() {
   const router = useRouter();
   const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [soul, setSoul] = useState("");
+  const [goal, setGoal] = useState("");
   const [phase, setPhase] = useState<Phase>("form");
   const [log, setLog] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -64,12 +63,12 @@ export function CreateBlankForm() {
 
       if (code !== 0) throw new Error("The installer did not finish — see the log above.");
 
-      // The installer created the profile + bank; apply name-only extras.
-      if (soul.trim() || description.trim()) {
+      // The installer created the profile + bank; inject the Goal into SOUL.md.
+      if (goal.trim()) {
         await fetch(`/api/agents/${encodeURIComponent(name)}`, {
           method: "PATCH",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ soul, description }),
+          body: JSON.stringify({ goal }),
         });
       }
       router.push(`/agents/${encodeURIComponent(name)}`);
@@ -127,26 +126,16 @@ export function CreateBlankForm() {
       </div>
 
       <div>
-        <label className="mb-1.5 block text-sm font-medium">Description</label>
-        <input
-          className="input"
-          placeholder="What is this agent for?"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </div>
-
-      <div>
         <label className="mb-1.5 block text-sm font-medium">
-          System prompt <span className="text-[var(--muted)]">(optional)</span>
+          Goal <span className="text-[var(--muted)]">(optional)</span>
         </label>
         <textarea
           className="input min-h-28 resize-y"
-          placeholder="You are a focused engineering assistant that…"
-          value={soul}
-          onChange={(e) => setSoul(e.target.value)}
+          placeholder="What should this agent accomplish? e.g. Review pull requests for correctness and security, and summarize findings."
+          value={goal}
+          onChange={(e) => setGoal(e.target.value)}
         />
-        <p className="mt-1 text-xs text-[var(--muted)]">Written to the profile&apos;s SOUL.md.</p>
+        <p className="mt-1 text-xs text-[var(--muted)]">Injected into the agent&apos;s SOUL.md.</p>
       </div>
 
       <div className="flex items-center justify-between">
