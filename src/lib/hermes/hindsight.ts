@@ -8,19 +8,25 @@ import { HINDSIGHT_CONFIG } from "./config";
  * Reads an agent's "mental models" — the long-term knowledge pages the SDA
  * `agent-knowledge` skill maintains in its Hindsight bank.
  *
- * Each Hermes profile may carry its own Hindsight connection at
- * `~/.hermes/profiles/<id>/hindsight/config.json` (written when an agent is
- * installed from the catalog); otherwise it falls back to the default
- * `~/.hermes/hindsight/config.json`. The connection gives us {api_url, api_key,
- * bank_id}, and mental models live at `/v1/default/banks/<bank_id>/mental-models`.
+ * We resolve the bank exactly the way the installed `hindsight-sda` plugin does
+ * (its `_load_config`): read `$HERMES_HOME/hindsight/config.json` for THAT
+ * profile — `~/.hermes/profiles/<id>/hindsight/config.json`, or `~/.hermes` for
+ * the default profile — and take `api_url`, `api_key` (sent as the bearer token),
+ * and `bank_id` (defaulting to the literal "hermes" when the key is absent).
+ *
+ * Crucially there is NO cross-agent fallback: if a profile has no
+ * hindsight/config.json it simply has no mental-models bank — we report that
+ * rather than guessing another agent's bank. A legacy per-agent location
+ * (`~/.self-driving-agents/hermes/<id>/config.json`, used by older installs) is
+ * accepted only for the exact same agent id.
  */
 
 export interface HindsightConn {
   apiUrl: string;
   apiKey?: string;
   bankId: string;
-  /** "profile" if the agent has its own bank, "default" if it shares the default. */
-  source: "profile" | "default";
+  /** where the connection came from, for display/debugging. */
+  source: "profile" | "legacy";
 }
 
 export interface MentalModel {
@@ -33,26 +39,37 @@ export interface MentalModel {
   is_stale: boolean | null;
 }
 
+/** `$HERMES_HOME/hindsight/config.json` for the agent's profile — the exact path the plugin reads. */
 function profileHindsightPath(agentId: string): string {
   if (agentId === "default") return HINDSIGHT_CONFIG;
   return join(homedir(), ".hermes", "profiles", agentId, "hindsight", "config.json");
 }
 
+/** Legacy per-agent config written by older `--harness hermes` installs. */
+function legacySdaPath(agentId: string): string {
+  return join(homedir(), ".self-driving-agents", "hermes", agentId, "config.json");
+}
+
 export function resolveHindsight(agentId: string): HindsightConn | null {
-  const profilePath = profileHindsightPath(agentId);
-  const candidates: Array<{ path: string; source: "profile" | "default" }> = [
-    { path: profilePath, source: agentId === "default" ? "default" : "profile" },
-    { path: HINDSIGHT_CONFIG, source: "default" },
+  const candidates: Array<{ path: string; source: "profile" | "legacy" }> = [
+    { path: profileHindsightPath(agentId), source: "profile" },
+    { path: legacySdaPath(agentId), source: "legacy" },
   ];
   for (const { path, source } of candidates) {
     if (!existsSync(path)) continue;
     try {
       const cfg = JSON.parse(readFileSync(path, "utf-8"));
-      if (cfg.api_url && cfg.bank_id) {
-        return { apiUrl: String(cfg.api_url).replace(/\/$/, ""), apiKey: cfg.api_key, bankId: cfg.bank_id, source };
-      }
+      if (!cfg.api_url) continue;
+      // Mirror the plugin: token is `api_key` (profile config) or `api_token`
+      // (legacy), and bank_id defaults to the literal "hermes".
+      return {
+        apiUrl: String(cfg.api_url).replace(/\/$/, ""),
+        apiKey: cfg.api_key ?? cfg.api_token,
+        bankId: cfg.bank_id || "hermes",
+        source,
+      };
     } catch {
-      /* try next */
+      /* try next candidate */
     }
   }
   return null;

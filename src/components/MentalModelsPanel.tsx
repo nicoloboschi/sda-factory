@@ -6,7 +6,7 @@ import type { MentalModel } from "@/lib/hermes/hindsight";
 interface Data {
   configured: boolean;
   bankId: string | null;
-  source: "profile" | "default" | null;
+  source: "profile" | "legacy" | null;
   items: MentalModel[];
 }
 
@@ -85,8 +85,8 @@ export function MentalModelsPanel({ agentId }: { agentId: string }) {
           <>
             <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-[var(--muted)]">
               <span className="rounded bg-[var(--surface-2)] px-2 py-1 font-mono">bank: {data.bankId}</span>
-              {data.source === "default" && (
-                <span className="rounded bg-[var(--surface-2)] px-2 py-1">shared default bank</span>
+              {data.source === "legacy" && (
+                <span className="rounded bg-[var(--surface-2)] px-2 py-1">legacy config</span>
               )}
               <span className="rounded bg-[var(--surface-2)] px-2 py-1">{data.items.length} models</span>
             </div>
