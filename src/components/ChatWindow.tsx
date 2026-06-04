@@ -51,6 +51,7 @@ export function ChatWindow({ agentId }: { agentId: string }) {
   const clientRef = useRef<ChatClient | null>(null);
   const assistantRef = useRef<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const seqRef = useRef(0);
 
   const refreshSessions = useCallback(async () => {
     try {
@@ -119,37 +120,63 @@ export function ChatWindow({ agentId }: { agentId: string }) {
     [patchAssistant, refreshSessions],
   );
 
-  useEffect(() => {
-    let cancelled = false;
-    setConn("booting");
-    setSessions([]);
-    setSessionsLoaded(false);
-    setMessages([]);
-    setActiveStoredId(null);
-    (async () => {
+  // Open (or re-open) the connection to the agent's chat backend. A monotonic
+  // sequence guards against races from agent switches and rapid reloads.
+  const connect = useCallback(
+    async (resumeStoredId?: string | null) => {
+      const seq = ++seqRef.current;
+      clientRef.current?.close();
+      clientRef.current = null;
+      assistantRef.current = null;
+      setConn("booting");
+      setSessions([]);
+      setSessionsLoaded(false);
+      setMessages([]);
+      setActiveStoredId(null);
+      setStatus(null);
+      setRunning(false);
       try {
         const res = await fetch(`/api/agents/${encodeURIComponent(agentId)}/chat`);
         const data = await res.json();
         if (!res.ok) throw new Error(data.error ?? "Failed to start agent backend");
-        if (cancelled) return;
+        if (seq !== seqRef.current) return;
         const c = new ChatClient(data.wsUrl, onEvent);
         clientRef.current = c;
         await c.connect();
-        if (cancelled) return;
+        if (seq !== seqRef.current) {
+          c.close();
+          return;
+        }
         setConn("ready");
-        void refreshSessions();
+        await refreshSessions();
+        if (resumeStoredId && seq === seqRef.current) {
+          const history = await c.resume(resumeStoredId);
+          if (seq !== seqRef.current) return;
+          setMessages(historyToMsgs(history));
+          setActiveStoredId(resumeStoredId);
+        }
       } catch (err) {
-        if (cancelled) return;
+        if (seq !== seqRef.current) return;
         setConnError((err as Error).message);
         setConn("error");
       }
-    })();
+    },
+    [agentId, onEvent, refreshSessions],
+  );
+
+  useEffect(() => {
+    connect();
     return () => {
-      cancelled = true;
+      seqRef.current++;
       clientRef.current?.close();
       clientRef.current = null;
     };
-  }, [agentId, onEvent, refreshSessions]);
+  }, [connect]);
+
+  /** Disconnect and reconnect, restoring the currently open conversation. */
+  function reload() {
+    connect(activeStoredId);
+  }
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -253,6 +280,26 @@ export function ChatWindow({ agentId }: { agentId: string }) {
 
       {/* Chat column */}
       <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex items-center justify-between border-b px-4 py-2 text-xs">
+          <span className="flex items-center gap-2 text-[var(--muted)]">
+            <span
+              className="h-2 w-2 rounded-full"
+              style={{
+                background:
+                  conn === "ready" ? "#46d18a" : conn === "booting" ? "#e0b33a" : "#e0564a",
+              }}
+            />
+            {conn === "ready" ? "Connected" : conn === "booting" ? "Connecting…" : "Disconnected"}
+          </span>
+          <button
+            onClick={reload}
+            disabled={conn === "booting"}
+            title="Disconnect and reconnect to the agent"
+            className="btn btn-ghost text-xs"
+          >
+            ↻ Reload
+          </button>
+        </div>
         <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto p-5">
           {conn === "booting" && <Spinner label="Booting Hermes for this agent…" />}
           {conn === "error" && <p className="text-sm text-red-400">Couldn&apos;t start the agent: {connError}</p>}
