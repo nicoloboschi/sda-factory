@@ -36,6 +36,14 @@ export const SESSION_HEADER = "X-Hermes-Session-Token";
 /** Where we persist the minted token + backend state across dev-server reloads. */
 export const STATE_DIR = join(homedir(), ".hermes", ".sda-factory");
 export const STATE_FILE = join(STATE_DIR, "state.json");
+export const SETTINGS_FILE = join(STATE_DIR, "settings.json");
+
+/**
+ * Base command for the self-driving-agents CLI. Configurable so you can point at
+ * a local dev build (e.g. `npx tsx /path/to/self-driving-agents/src/cli.ts`).
+ * The installer appends `install <target> --harness hermes [--empty]`.
+ */
+export const DEFAULT_SDA_COMMAND = "npx --yes @vectorize-io/self-driving-agents";
 
 /** Slug rule mirrors Hermes' own profile-name validation. */
 export const PROFILE_NAME_RE = /^[a-z0-9][a-z0-9_-]{0,63}$/;

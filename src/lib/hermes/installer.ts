@@ -1,6 +1,7 @@
 import "server-only";
 import { spawn, type IPty } from "node-pty";
 import { homedir } from "node:os";
+import { getSdaCommand } from "./settings";
 
 /**
  * Runs the self-driving-agents installer through a real PTY.
@@ -24,7 +25,7 @@ const ANSI = /\x1b\[[0-9;?]*[A-Za-z]/g;
 /** target is validated upstream to `[a-z0-9_-]+` or `<dept>/<agent>`, so it's shell-safe. */
 function buildCommand(opts: { target: string; empty?: boolean }): string {
   const flag = opts.empty ? " --empty" : "";
-  return `npx --yes @vectorize-io/self-driving-agents install ${opts.target} --harness hermes${flag}`;
+  return `${getSdaCommand()} install ${opts.target} --harness hermes${flag}`;
 }
 
 export function runInstall(
