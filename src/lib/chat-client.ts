@@ -26,11 +26,28 @@ export type ChatEvent =
 
 type Pending = { resolve: (v: unknown) => void; reject: (e: Error) => void };
 
+/** A stored conversation, as returned by `session.list`. */
+export interface SessionMeta {
+  id: string;
+  title: string;
+  preview: string;
+  started_at: number;
+  message_count: number;
+}
+
+/** A prior message replayed by `session.resume`. */
+export interface HistoryMessage {
+  role: "user" | "assistant" | "system" | "tool";
+  text?: string;
+  name?: string;
+}
+
 export class ChatClient {
   private ws: WebSocket | null = null;
   private nextId = 1;
   private pending = new Map<number, Pending>();
   private sessionId: string | null = null;
+  private storedId: string | null = null;
   private ready: Promise<void>;
   private resolveReady!: () => void;
   private rejectReady!: (e: Error) => void;
@@ -152,16 +169,57 @@ export class ChatClient {
     }
   }
 
-  /** Create the chat session (once). Safe to call after connect(). */
-  async start(): Promise<void> {
+  /** The stored (DB) id of the active conversation, for sidebar highlighting. */
+  get currentStoredId(): string | null {
+    return this.storedId;
+  }
+
+  /** List stored conversations for this agent. */
+  async listSessions(): Promise<SessionMeta[]> {
     await this.ready;
-    if (this.sessionId) return;
-    const res = (await this.rpc("session.create", { cols: 100 })) as { session_id: string };
+    const res = (await this.rpc("session.list", { limit: 100 })) as { sessions: SessionMeta[] };
+    return res.sessions ?? [];
+  }
+
+  /** Begin a fresh conversation. */
+  async newSession(): Promise<void> {
+    await this.ready;
+    const res = (await this.rpc("session.create", { cols: 100 })) as {
+      session_id: string;
+      stored_session_id?: string;
+    };
     this.sessionId = res.session_id;
+    this.storedId = res.stored_session_id ?? res.session_id;
+  }
+
+  /** Reopen a stored conversation; returns its prior messages to render. */
+  async resume(storedId: string): Promise<HistoryMessage[]> {
+    await this.ready;
+    const res = (await this.rpc("session.resume", { session_id: storedId, cols: 100 })) as {
+      session_id: string;
+      messages: HistoryMessage[];
+    };
+    this.sessionId = res.session_id;
+    this.storedId = storedId;
+    return res.messages ?? [];
+  }
+
+  async deleteSession(storedId: string): Promise<void> {
+    await this.rpc("session.delete", { session_id: storedId });
+  }
+
+  /** Forget the active session so the next send() lazily starts a fresh one. */
+  reset(): void {
+    this.sessionId = null;
+    this.storedId = null;
+  }
+
+  private async ensureSession(): Promise<void> {
+    if (!this.sessionId) await this.newSession();
   }
 
   async send(text: string): Promise<void> {
-    await this.start();
+    await this.ensureSession();
     await this.rpc("prompt.submit", { session_id: this.sessionId, text });
   }
 
