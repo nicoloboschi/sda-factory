@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { MentalModel } from "@/lib/hermes/hindsight";
 import { Markdown } from "@/components/Markdown";
+import { Spinner } from "@/components/Spinner";
 
 interface Data {
   configured: boolean;
@@ -69,7 +70,7 @@ export function MentalModelsPanel({ agentId }: { agentId: string }) {
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto p-4">
-        {loading && <p className="text-sm text-[var(--muted)]">Loading…</p>}
+        {loading && <Spinner label="Loading mental models…" />}
         {error && <p className="text-sm text-red-400">{error}</p>}
 
         {!loading && !error && data && !data.configured && (

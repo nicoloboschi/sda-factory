@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChatClient, type ChatEvent, type HistoryMessage, type SessionMeta } from "@/lib/chat-client";
 import { Markdown } from "@/components/Markdown";
+import { Spinner } from "@/components/Spinner";
 
 interface ToolCall {
   id: string;
@@ -39,6 +40,7 @@ function historyToMsgs(history: HistoryMessage[]): Msg[] {
 export function ChatWindow({ agentId }: { agentId: string }) {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [sessions, setSessions] = useState<SessionMeta[]>([]);
+  const [sessionsLoaded, setSessionsLoaded] = useState(false);
   const [activeStoredId, setActiveStoredId] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [running, setRunning] = useState(false);
@@ -57,6 +59,8 @@ export function ChatWindow({ agentId }: { agentId: string }) {
       setActiveStoredId(clientRef.current!.currentStoredId);
     } catch {
       /* ignore */
+    } finally {
+      setSessionsLoaded(true);
     }
   }, []);
 
@@ -117,8 +121,12 @@ export function ChatWindow({ agentId }: { agentId: string }) {
 
   useEffect(() => {
     let cancelled = false;
+    setConn("booting");
+    setSessions([]);
+    setSessionsLoaded(false);
+    setMessages([]);
+    setActiveStoredId(null);
     (async () => {
-      setConn("booting");
       try {
         const res = await fetch(`/api/agents/${encodeURIComponent(agentId)}/chat`);
         const data = await res.json();
@@ -213,7 +221,8 @@ export function ChatWindow({ agentId }: { agentId: string }) {
           <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--muted)]">
             Sessions
           </p>
-          {sessions.length === 0 && (
+          {!sessionsLoaded && <Spinner label="Loading…" className="px-2 py-2 text-xs" />}
+          {sessionsLoaded && sessions.length === 0 && (
             <p className="px-2 py-2 text-xs text-[var(--muted)]">No conversations yet.</p>
           )}
           {sessions.map((s) => (
@@ -245,7 +254,7 @@ export function ChatWindow({ agentId }: { agentId: string }) {
       {/* Chat column */}
       <div className="flex min-w-0 flex-1 flex-col">
         <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto p-5">
-          {conn === "booting" && <p className="text-sm text-[var(--muted)]">Booting Hermes for this agent…</p>}
+          {conn === "booting" && <Spinner label="Booting Hermes for this agent…" />}
           {conn === "error" && <p className="text-sm text-red-400">Couldn&apos;t start the agent: {connError}</p>}
           {conn === "ready" && messages.length === 0 && (
             <p className="text-sm text-[var(--muted)]">

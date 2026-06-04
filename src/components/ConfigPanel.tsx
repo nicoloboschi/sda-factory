@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { HermesProfile } from "@/lib/hermes/types";
+import { Spinner } from "@/components/Spinner";
 
 export function ConfigPanel({ agentId }: { agentId: string }) {
   const [profile, setProfile] = useState<HermesProfile | null>(null);
@@ -47,7 +48,7 @@ export function ConfigPanel({ agentId }: { agentId: string }) {
     }
   }
 
-  if (loading) return <p className="text-sm text-[var(--muted)]">Loading config…</p>;
+  if (loading) return <div className="card p-6"><Spinner label="Loading config…" /></div>;
   if (!profile) return <p className="text-sm text-red-400">Agent not found.</p>;
 
   return (
