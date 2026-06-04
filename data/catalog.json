@@ -1,0 +1,373 @@
+[
+  {
+    "department": "Design",
+    "agents": [
+      {
+        "path": "design/ux",
+        "title": "Ux",
+        "description": "Expert UI designer specializing in visual design systems, component libraries, and pixel-perfect interface creation. Creates beautiful, consistent, accessible user interfaces that enhance UX and refle",
+        "agentCount": 3
+      },
+      {
+        "path": "design/visual",
+        "title": "Visual",
+        "description": "Expert brand strategist and guardian specializing in brand identity development, consistency maintenance, and strategic brand positioning",
+        "agentCount": 5
+      }
+    ]
+  },
+  {
+    "department": "Engineering",
+    "agents": [
+      {
+        "path": "engineering/ai",
+        "title": "Ai",
+        "description": "Expert AI/ML engineer specializing in machine learning model development, deployment, and integration into production systems. Focused on building intelligent features, data pipelines, and AI-powered ",
+        "agentCount": 5
+      },
+      {
+        "path": "engineering/architecture",
+        "title": "Architecture",
+        "description": "Specialized in ultra-fast proof-of-concept development and MVP creation using efficient tools and frameworks",
+        "agentCount": 3
+      },
+      {
+        "path": "engineering/backend",
+        "title": "Backend",
+        "description": "Specialist in self-healing data pipelines — uses air-gapped local SLMs and semantic clustering to automatically detect, classify, and fix data anomalies at scale. Focuses exclusively on the remediatio",
+        "agentCount": 5
+      },
+      {
+        "path": "engineering/frontend",
+        "title": "Frontend",
+        "description": "Expert frontend developer specializing in modern web technologies, React/Vue/Angular frameworks, UI implementation, and performance optimization",
+        "agentCount": 3
+      },
+      {
+        "path": "engineering/ops",
+        "title": "Ops",
+        "description": "Expert DevOps engineer specializing in infrastructure automation, CI/CD pipeline development, and cloud operations",
+        "agentCount": 4
+      },
+      {
+        "path": "engineering/security",
+        "title": "Security",
+        "description": "Expert application security engineer specializing in threat modeling, vulnerability assessment, secure code review, security architecture design, and incident response for modern web, API, and cloud-n",
+        "agentCount": 3
+      },
+      {
+        "path": "engineering/workflow",
+        "title": "Workflow",
+        "description": "Expert code reviewer who provides constructive, actionable feedback focused on correctness, maintainability, security, and performance — not style preferences.",
+        "agentCount": 6
+      }
+    ]
+  },
+  {
+    "department": "Finance",
+    "agents": [
+      {
+        "path": "finance/accounting",
+        "title": "Accounting",
+        "description": "Expert bookkeeper and controller specializing in day-to-day accounting operations, financial reconciliations, month-end close processes, and internal controls. Ensures the accuracy, completeness, and ",
+        "agentCount": 2
+      },
+      {
+        "path": "finance/analysis",
+        "title": "Analysis",
+        "description": "Expert financial analyst specializing in financial modeling, forecasting, scenario analysis, and data-driven decision support. Transforms raw financial data into actionable business intelligence that ",
+        "agentCount": 3
+      }
+    ]
+  },
+  {
+    "department": "Game Development",
+    "agents": [
+      {
+        "path": "game-development/blender",
+        "title": "Blender",
+        "description": "Blender tooling specialist - Builds Python add-ons, asset validators, exporters, and pipeline automations that turn repetitive DCC work into reliable one-click workflows",
+        "agentCount": 1
+      },
+      {
+        "path": "game-development/core",
+        "title": "Core",
+        "description": "Interactive audio specialist - Masters FMOD/Wwise integration, adaptive music systems, spatial audio, and audio performance budgeting across all game engines",
+        "agentCount": 5
+      },
+      {
+        "path": "game-development/godot",
+        "title": "Godot",
+        "description": "Composition and signal integrity specialist - Masters GDScript 2.0, C# integration, node-based architecture, and type-safe signal design for Godot 4 projects",
+        "agentCount": 3
+      },
+      {
+        "path": "game-development/roblox-studio",
+        "title": "Roblox Studio",
+        "description": "Roblox UGC and avatar pipeline specialist - Masters Roblox's avatar system, UGC item creation, accessory rigging, texture standards, and the Creator Marketplace submission pipeline",
+        "agentCount": 3
+      },
+      {
+        "path": "game-development/unity",
+        "title": "Unity",
+        "description": "Data-driven modularity specialist - Masters ScriptableObjects, decoupled systems, and single-responsibility component design for scalable Unity projects",
+        "agentCount": 4
+      },
+      {
+        "path": "game-development/unreal-engine",
+        "title": "Unreal Engine",
+        "description": "Unreal Engine networking specialist - Masters Actor replication, GameMode/GameState architecture, server-authoritative gameplay, network prediction, and dedicated server setup for UE5",
+        "agentCount": 4
+      }
+    ]
+  },
+  {
+    "department": "Marketing",
+    "agents": [
+      {
+        "path": "marketing/china-market",
+        "title": "China Market",
+        "description": "Expert Bilibili marketing specialist focused on UP主 growth, danmaku culture mastery, B站 algorithm optimization, community building, and branded content strategy for China's leading video community pla",
+        "agentCount": 10
+      },
+      {
+        "path": "marketing/content",
+        "title": "Content",
+        "description": "Strategic thought-leadership book collaborator for founders, experts, and operators turning voice notes, fragments, and positioning into structured first-person chapters.",
+        "agentCount": 3
+      },
+      {
+        "path": "marketing/ecommerce",
+        "title": "Ecommerce",
+        "description": "Full-funnel cross-border e-commerce strategist covering Amazon, Shopee, Lazada, AliExpress, Temu, and TikTok Shop operations, international logistics and overseas warehousing, compliance and taxation,",
+        "agentCount": 2
+      },
+      {
+        "path": "marketing/seo",
+        "title": "Seo",
+        "description": "Expert in WebMCP readiness and agentic task completion — audits whether AI agents can actually accomplish tasks on your site (book, buy, register, subscribe), implements WebMCP declarative and imperat",
+        "agentCount": 6
+      },
+      {
+        "path": "marketing/social-media",
+        "title": "Social Media",
+        "description": "Autonomous TikTok and Instagram carousel generation specialist. Analyzes any website URL with Playwright, generates viral 6-slide carousels via Gemini image generation, publishes directly to feed via ",
+        "agentCount": 9
+      }
+    ]
+  },
+  {
+    "department": "Paid Media",
+    "agents": [
+      {
+        "path": "paid-media/analytics",
+        "title": "Analytics",
+        "description": "Comprehensive paid media auditor who systematically evaluates Google Ads, Microsoft Ads, and Meta accounts across 200+ checkpoints spanning account structure, tracking, bidding, creative, audiences, a",
+        "agentCount": 3
+      },
+      {
+        "path": "paid-media/channels",
+        "title": "Channels",
+        "description": "Paid media creative specialist focused on ad copywriting, RSA optimization, asset group design, and creative testing frameworks across Google, Meta, Microsoft, and programmatic platforms. Bridges the ",
+        "agentCount": 4
+      }
+    ]
+  },
+  {
+    "department": "Product",
+    "agents": [
+      {
+        "path": "product/delivery",
+        "title": "Delivery",
+        "description": "Behavioral psychology specialist that adapts software interaction cadences and styles to maximize user motivation and success.",
+        "agentCount": 3
+      },
+      {
+        "path": "product/discovery",
+        "title": "Discovery",
+        "description": "Expert in collecting, analyzing, and synthesizing user feedback from multiple channels to extract actionable product insights. Transforms qualitative feedback into quantitative priorities and strategi",
+        "agentCount": 2
+      }
+    ]
+  },
+  {
+    "department": "Project Management",
+    "agents": [
+      {
+        "path": "project-management/delivery",
+        "title": "Delivery",
+        "description": "Expert project manager specializing in experiment design, execution tracking, and data-driven decision making. Focused on managing A/B tests, feature experiments, and hypothesis validation through sys",
+        "agentCount": 2
+      },
+      {
+        "path": "project-management/planning",
+        "title": "Planning",
+        "description": "Converts specs to tasks and remembers previous projects. Focused on realistic scope, no background processes, exact spec requirements",
+        "agentCount": 2
+      },
+      {
+        "path": "project-management/studio",
+        "title": "Studio",
+        "description": "Expert operations manager specializing in day-to-day studio efficiency, process optimization, and resource coordination. Focused on ensuring smooth operations, maintaining productivity standards, and ",
+        "agentCount": 2
+      }
+    ]
+  },
+  {
+    "department": "Sales",
+    "agents": [
+      {
+        "path": "sales/coaching",
+        "title": "Coaching",
+        "description": "Expert sales coaching specialist focused on rep development, pipeline review facilitation, call coaching, deal strategy, and forecast accuracy. Makes every rep and every deal better through structured",
+        "agentCount": 2
+      },
+      {
+        "path": "sales/ops",
+        "title": "Ops",
+        "description": "Senior pre-sales engineer specializing in technical discovery, demo engineering, POC scoping, competitive battlecards, and bridging product capabilities to business outcomes. Wins the technical decisi",
+        "agentCount": 2
+      },
+      {
+        "path": "sales/strategy",
+        "title": "Strategy",
+        "description": "Expert post-sale account strategist specializing in land-and-expand execution, stakeholder mapping, QBR facilitation, and net revenue retention. Turns closed deals into long-term platform relationship",
+        "agentCount": 4
+      }
+    ]
+  },
+  {
+    "department": "Spatial Computing",
+    "agents": [
+      {
+        "path": "spatial-computing/platform",
+        "title": "Platform",
+        "description": "Native Swift and Metal specialist building high-performance 3D rendering systems and spatial computing experiences for macOS and Vision Pro",
+        "agentCount": 3
+      },
+      {
+        "path": "spatial-computing/xr",
+        "title": "Xr",
+        "description": "Specialist in designing and developing immersive cockpit-based control systems for XR environments",
+        "agentCount": 3
+      }
+    ]
+  },
+  {
+    "department": "Specialized",
+    "agents": [
+      {
+        "path": "specialized/automation",
+        "title": "Automation",
+        "description": "AI agent that consolidates extracted sales data into live reporting dashboards with territory, rep, and pipeline summaries",
+        "agentCount": 3
+      },
+      {
+        "path": "specialized/compliance-trust",
+        "title": "Compliance Trust",
+        "description": "Designs identity, authentication, and trust verification systems for autonomous AI agents operating in multi-agent environments. Ensures agents can prove who they are, what they're authorized to do, a",
+        "agentCount": 6
+      },
+      {
+        "path": "specialized/customer-service",
+        "title": "Customer Service",
+        "description": "Friendly, professional customer service specialist for any industry — handling inquiries, complaints, account support, FAQs, and seamless escalation with warmth, efficiency, and a genuine commitment t",
+        "agentCount": 3
+      },
+      {
+        "path": "specialized/domain-experts",
+        "title": "Domain Experts",
+        "description": "Expert civil and structural engineer with global standards coverage — Eurocode, DIN, ACI, AISC, ASCE, AS/NZS, CSA, GB, IS, AIJ, and more. Specializes in structural analysis, geotechnical design, const",
+        "agentCount": 4
+      },
+      {
+        "path": "specialized/engineering-meta",
+        "title": "Engineering Meta",
+        "description": "Language Server Protocol specialist building unified code intelligence systems through LSP client orchestration and semantic indexing",
+        "agentCount": 5
+      },
+      {
+        "path": "specialized/exec-ops",
+        "title": "Exec Ops",
+        "description": "Autonomous pipeline manager that orchestrates the entire development workflow. You are the leader of this process.",
+        "agentCount": 2
+      },
+      {
+        "path": "specialized/finance-ops",
+        "title": "Finance Ops",
+        "description": "Autonomous payment processing specialist that executes vendor payments, contractor invoices, and recurring bills across any payment rail — crypto, fiat, stablecoins. Integrates with AI agent workflows",
+        "agentCount": 3
+      },
+      {
+        "path": "specialized/healthcare",
+        "title": "Healthcare",
+        "description": "Empathetic healthcare customer service specialist for patient support, billing inquiries, appointment management, insurance questions, complaint resolution, and seamless escalation to clinical or admi",
+        "agentCount": 2
+      },
+      {
+        "path": "specialized/hr",
+        "title": "Hr",
+        "description": "Expert in enterprise training system design and curriculum development — proficient in training needs analysis, instructional design methodology, blended learning program design, internal trainer deve",
+        "agentCount": 3
+      },
+      {
+        "path": "specialized/legal",
+        "title": "Legal",
+        "description": "Comprehensive legal billing and time tracking specialist for accurate time capture, invoice generation, billing narrative writing, collections management, trust account compliance, and billing analysi",
+        "agentCount": 3
+      },
+      {
+        "path": "specialized/regional",
+        "title": "Regional",
+        "description": "CQ specialist that detects invisible exclusion, researches global context, and ensures software resonates authentically across intersectional identities.",
+        "agentCount": 5
+      },
+      {
+        "path": "specialized/sales-ops",
+        "title": "Sales Ops",
+        "description": "AI agent specialized in monitoring Excel files and extracting key sales metrics (MTD, YTD, Year End) for internal live reporting",
+        "agentCount": 2
+      }
+    ]
+  },
+  {
+    "department": "Support",
+    "agents": [
+      {
+        "path": "support/analytics",
+        "title": "Analytics",
+        "description": "Expert data analyst transforming raw data into actionable business insights. Creates dashboards, performs statistical analysis, tracks KPIs, and provides strategic decision support through data visual",
+        "agentCount": 3
+      },
+      {
+        "path": "support/ops-response",
+        "title": "Ops Response",
+        "description": "Expert infrastructure specialist focused on system reliability, performance optimization, and technical operations management. Maintains robust, scalable infrastructure supporting business operations ",
+        "agentCount": 3
+      }
+    ]
+  },
+  {
+    "department": "Testing",
+    "agents": [
+      {
+        "path": "testing/automation",
+        "title": "Automation",
+        "description": "Expert API testing specialist focused on comprehensive API validation, performance testing, and quality assurance across all systems and third-party integrations",
+        "agentCount": 3
+      },
+      {
+        "path": "testing/meta",
+        "title": "Meta",
+        "description": "Expert technology assessment specialist focused on evaluating, testing, and recommending tools, software, and platforms for business use and productivity optimization",
+        "agentCount": 2
+      },
+      {
+        "path": "testing/quality",
+        "title": "Quality",
+        "description": "Expert accessibility specialist who audits interfaces against WCAG standards, tests with assistive technologies, and ensures inclusive design. Defaults to finding barriers — if it's not tested with a ",
+        "agentCount": 3
+      }
+    ]
+  }
+]
