@@ -27,7 +27,7 @@ export function CatalogPicker() {
     setDone(null);
     setLog([`$ npx @vectorize-io/self-driving-agents install ${selected.path} --harness hermes`]);
     try {
-      const res = await fetch("/api/catalog/install", {
+      const res = await fetch("/api/agents/install", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ path: selected.path }),

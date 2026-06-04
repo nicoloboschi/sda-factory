@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: dirname(fileURLToPath(import.meta.url)),
   },
+  // node-pty is a native addon (ships a spawn-helper binary). Bundling it breaks
+  // posix_spawn; keep it external so it loads from node_modules at runtime.
+  serverExternalPackages: ["node-pty"],
 };
 
 export default nextConfig;
