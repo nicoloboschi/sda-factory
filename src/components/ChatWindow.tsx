@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChatClient, type ChatEvent, type HistoryMessage, type SessionMeta } from "@/lib/chat-client";
+import { Markdown } from "@/components/Markdown";
 
 interface ToolCall {
   id: string;
@@ -315,10 +316,13 @@ function MessageBubble({ msg }: { msg: Msg }) {
             ))}
           </div>
         )}
-        <div className="whitespace-pre-wrap">
-          {msg.text}
-          {msg.streaming && !msg.text && <span className="opacity-50">▍</span>}
-        </div>
+        {isUser ? (
+          <div className="whitespace-pre-wrap">{msg.text}</div>
+        ) : msg.text ? (
+          <Markdown>{msg.text}</Markdown>
+        ) : (
+          msg.streaming && <span className="opacity-50">▍</span>
+        )}
       </div>
     </div>
   );

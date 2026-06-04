@@ -48,6 +48,7 @@ export class ChatClient {
   private pending = new Map<number, Pending>();
   private sessionId: string | null = null;
   private storedId: string | null = null;
+  private toolSeq = 0;
   private ready: Promise<void>;
   private resolveReady!: () => void;
   private rejectReady!: (e: Error) => void;
@@ -135,15 +136,17 @@ export class ChatClient {
       case "tool.start":
         this.onEvent({
           kind: "tool_start",
-          id: String(p.tool_call_id ?? p.id ?? p.name ?? ""),
+          // `tool_id` is the unique per-call id; fall back to a synthetic unique
+          // id so two calls of the same tool never collide on a React key.
+          id: String(p.tool_id ?? p.tool_call_id ?? `${p.name ?? "tool"}-${++this.toolSeq}`),
           name: String(p.name ?? "tool"),
-          preview: typeof p.preview === "string" ? p.preview : undefined,
+          preview: typeof p.context === "string" ? p.context : typeof p.args_text === "string" ? p.args_text : undefined,
         });
         break;
       case "tool.complete":
         this.onEvent({
           kind: "tool_complete",
-          id: String(p.tool_call_id ?? p.id ?? p.name ?? ""),
+          id: String(p.tool_id ?? p.tool_call_id ?? p.name ?? ""),
           name: String(p.name ?? "tool"),
           ok: p.error == null,
         });

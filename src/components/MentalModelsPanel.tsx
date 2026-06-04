@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { MentalModel } from "@/lib/hermes/hindsight";
+import { Markdown } from "@/components/Markdown";
 
 interface Data {
   configured: boolean;
@@ -136,9 +137,11 @@ export function MentalModelsPanel({ agentId }: { agentId: string }) {
                         <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">
                           Content
                         </p>
-                        <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">
-                          {m.content || "(empty — not yet consolidated)"}
-                        </pre>
+                        {m.content ? (
+                          <Markdown>{m.content}</Markdown>
+                        ) : (
+                          <p className="text-[var(--muted)]">(empty — not yet consolidated)</p>
+                        )}
                       </div>
                     )}
                   </div>
