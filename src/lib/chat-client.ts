@@ -49,6 +49,7 @@ export class ChatClient {
   private sessionId: string | null = null;
   private storedId: string | null = null;
   private toolSeq = 0;
+  private pendingClarify: string | null = null;
   private ready: Promise<void>;
   private resolveReady!: () => void;
   private rejectReady!: (e: Error) => void;
@@ -124,8 +125,13 @@ export class ChatClient {
         this.onEvent({ kind: "message_delta", text });
         break;
       case "message.complete":
-        this.onEvent({ kind: "message_complete", text });
-        this.onEvent({ kind: "turn_end" });
+        // Guarantee turn_end fires even if the message_complete handler throws,
+        // so the UI never gets stuck "running".
+        try {
+          this.onEvent({ kind: "message_complete", text });
+        } finally {
+          this.onEvent({ kind: "turn_end" });
+        }
         break;
       case "thinking.delta":
         this.onEvent({ kind: "thinking", text });
@@ -155,16 +161,26 @@ export class ChatClient {
         this.onEvent({ kind: "error", text: String(p.message ?? "error") });
         this.onEvent({ kind: "turn_end" });
         break;
-      case "clarify.request":
       case "approval.request":
+        // Autonomous: approve tool use (YOLO mode usually bypasses this already).
+        this.respond("approval.respond", { choice: "approve", all: false });
+        break;
       case "sudo.request":
+        // Don't pipe a password through chat — skip so the agent doesn't hang.
+        this.respond("sudo.respond", { request_id: p.request_id, password: "" });
+        this.onEvent({ kind: "notice", text: "Skipped a sudo request." });
+        break;
       case "secret.request":
+        this.respond("secret.respond", { request_id: p.request_id, value: "" });
+        this.onEvent({ kind: "notice", text: "Skipped a secret request." });
+        break;
+      case "clarify.request":
+        // The agent is asking the user a question and is blocked until answered.
+        // Stash the request id; the user's next message answers it (see send()).
+        this.pendingClarify = typeof p.request_id === "string" ? p.request_id : null;
         this.onEvent({
           kind: "notice",
-          text:
-            typeof p.question === "string"
-              ? p.question
-              : `Agent is waiting on: ${type.replace(".request", "")}`,
+          text: typeof p.question === "string" ? `❓ ${p.question}` : "The agent asked a question — reply to continue.",
         });
         break;
       default:
@@ -215,13 +231,27 @@ export class ChatClient {
   reset(): void {
     this.sessionId = null;
     this.storedId = null;
+    this.pendingClarify = null;
   }
 
   private async ensureSession(): Promise<void> {
     if (!this.sessionId) await this.newSession();
   }
 
+  /** Fire-and-forget response to a gateway prompt (approval/sudo/secret/clarify). */
+  private respond(method: string, params: Record<string, unknown>): void {
+    this.rpc(method, { session_id: this.sessionId, ...params }).catch(() => {});
+  }
+
   async send(text: string): Promise<void> {
+    // If the agent is waiting on a clarifying question, this message answers it
+    // (rather than starting a new turn, which the busy session would reject).
+    if (this.pendingClarify) {
+      const requestId = this.pendingClarify;
+      this.pendingClarify = null;
+      await this.rpc("clarify.respond", { session_id: this.sessionId, request_id: requestId, answer: text });
+      return;
+    }
     await this.ensureSession();
     await this.rpc("prompt.submit", { session_id: this.sessionId, text });
   }

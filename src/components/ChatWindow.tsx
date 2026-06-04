@@ -372,13 +372,15 @@ function MessageBubble({ msg }: { msg: Msg }) {
             ))}
           </div>
         )}
-        {isUser ? (
-          <div className="whitespace-pre-wrap">{msg.text}</div>
+        {isUser || msg.streaming ? (
+          // Plain text while streaming (cheap); markdown is parsed once on completion.
+          <div className="whitespace-pre-wrap">
+            {msg.text}
+            {msg.streaming && <span className="opacity-50">▍</span>}
+          </div>
         ) : msg.text ? (
           <Markdown>{msg.text}</Markdown>
-        ) : (
-          msg.streaming && <span className="opacity-50">▍</span>
-        )}
+        ) : null}
       </div>
     </div>
   );
