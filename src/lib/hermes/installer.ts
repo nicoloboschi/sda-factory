@@ -36,7 +36,10 @@ export function runInstall(
   // Spawn through a login shell: node-pty can't posix_spawn the `npx` script
   // directly, and a login shell resolves the user's PATH (node/npx) reliably.
   const shell = process.env.SHELL || "/bin/bash";
-  const child = spawn(shell, ["-lc", buildCommand(opts)], {
+  const command = buildCommand(opts);
+  // Surface the actual resolved command (honors the configured SDA CLI command).
+  onEvent({ line: `$ ${command}` });
+  const child = spawn(shell, ["-lc", command], {
     name: "xterm-color",
     cols: 100,
     rows: 30,

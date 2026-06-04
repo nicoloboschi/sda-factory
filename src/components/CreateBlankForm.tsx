@@ -34,7 +34,7 @@ export function CreateBlankForm() {
     e.preventDefault();
     setPhase("installing");
     setError(null);
-    setLog([`$ npx @vectorize-io/self-driving-agents install ${name} --harness hermes --empty`]);
+    setLog(["Starting installer…"]);
     try {
       const res = await fetch("/api/agents/install", {
         method: "POST",
